@@ -35,13 +35,30 @@ def initialize_database() -> None:
                 status = excluded.status,
                 checked_at = CURRENT_TIMESTAMP;
 
+            CREATE TABLE IF NOT EXISTS team_members (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                department TEXT,
+                position TEXT,
+                email TEXT,
+                phone TEXT,
+                is_active INTEGER NOT NULL DEFAULT 1,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at TEXT
+            );
+
             CREATE TABLE IF NOT EXISTS calendar_events (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                member_id INTEGER,
                 title TEXT NOT NULL,
                 event_type TEXT NOT NULL,
                 starts_at TEXT NOT NULL,
                 ends_at TEXT NOT NULL,
-                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+                location TEXT,
+                memo TEXT,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at TEXT,
+                FOREIGN KEY(member_id) REFERENCES team_members(id)
             );
 
             CREATE TABLE IF NOT EXISTS excel_jobs (
@@ -66,4 +83,24 @@ def initialize_database() -> None:
                 collected_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             """
+        )
+        _ensure_column(connection, "calendar_events", "member_id", "INTEGER")
+        _ensure_column(connection, "calendar_events", "location", "TEXT")
+        _ensure_column(connection, "calendar_events", "memo", "TEXT")
+        _ensure_column(connection, "calendar_events", "updated_at", "TEXT")
+
+
+def _ensure_column(
+    connection: sqlite3.Connection,
+    table_name: str,
+    column_name: str,
+    column_definition: str,
+) -> None:
+    columns = {
+        row["name"]
+        for row in connection.execute(f"PRAGMA table_info({table_name})").fetchall()
+    }
+    if column_name not in columns:
+        connection.execute(
+            f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_definition}"
         )
