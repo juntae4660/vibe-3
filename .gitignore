@@ -1,0 +1,12 @@
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+backend/.venv/
+backend/.uv-cache/
+backend/data/*.db
+backend/app/**/__pycache__/
+backend/app/**/*.pyc
+
+.uv-cache/
+.codex/
