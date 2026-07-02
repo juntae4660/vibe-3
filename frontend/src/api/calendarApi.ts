@@ -4,11 +4,12 @@ import type {
   TeamMember,
   TeamMemberPayload,
 } from "../types/calendar";
+import { apiUrl } from "./config";
 
 const CALENDAR_API = "/api/calendar";
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(`${CALENDAR_API}${path}`, {
+  const response = await fetch(apiUrl(`${CALENDAR_API}${path}`), {
     headers: {
       "Content-Type": "application/json",
       ...options?.headers,

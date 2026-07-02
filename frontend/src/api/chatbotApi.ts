@@ -1,4 +1,5 @@
 import type { ChatbotAnswer, ChatbotManual, ChatbotQuestionPayload } from "../types/chatbot";
+import { apiUrl } from "./config";
 
 const CHATBOT_API = "/api/chatbot";
 const OPENAI_API_KEY_HEADER = "X-OpenAI-Api-Key";
@@ -13,7 +14,7 @@ async function request<T>(
     headers.set(OPENAI_API_KEY_HEADER, apiKey.trim());
   }
 
-  const response = await fetch(`${CHATBOT_API}${path}`, {
+  const response = await fetch(apiUrl(`${CHATBOT_API}${path}`), {
     ...options,
     headers,
   });

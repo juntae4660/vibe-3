@@ -1,9 +1,10 @@
 import type { NewsArticle, NewsCollectionResponse } from "../types/news";
+import { apiUrl } from "./config";
 
 const NEWS_API = "/api/news";
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(`${NEWS_API}${path}`, {
+  const response = await fetch(apiUrl(`${NEWS_API}${path}`), {
     headers: {
       "Content-Type": "application/json",
       ...options?.headers,
