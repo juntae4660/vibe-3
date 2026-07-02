@@ -1,8 +1,8 @@
 import type { HealthResponse } from "../types/system";
-import { apiUrl } from "./config";
+import { apiUrl, getApiBaseUrl } from "./config";
 
-async function request<T>(path: string): Promise<T> {
-  const response = await fetch(apiUrl(path));
+async function request<T>(path: string, baseUrl = getApiBaseUrl()): Promise<T> {
+  const response = await fetch(apiUrl(path, baseUrl));
 
   if (!response.ok) {
     throw new Error(`${path} 요청 실패: ${response.status}`);
@@ -11,10 +11,10 @@ async function request<T>(path: string): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-export function getBackendHealth() {
-  return request<HealthResponse>("/api/health");
+export function getBackendHealth(baseUrl?: string) {
+  return request<HealthResponse>("/api/health", baseUrl);
 }
 
-export function getDatabaseHealth() {
-  return request<HealthResponse>("/api/db/health");
+export function getDatabaseHealth(baseUrl?: string) {
+  return request<HealthResponse>("/api/db/health", baseUrl);
 }

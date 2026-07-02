@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute
 
 from app.api.routes import calendar, chatbot, db, excel, health, news
+from app.core.config import get_cors_origins
 from app.core.database import initialize_database
 from app.core.scheduler import start_scheduler
 
@@ -10,7 +11,7 @@ app = FastAPI(title="Public Administration Super App API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=get_cors_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

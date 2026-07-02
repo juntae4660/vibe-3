@@ -76,6 +76,16 @@ button {
   padding: 32px;
 }
 
+.connection-panel {
+  display: grid;
+  gap: 18px;
+  padding: 28px;
+  background: rgba(255, 250, 240, 0.94);
+  border: 1px solid #d8cdb7;
+  border-radius: 26px;
+  box-shadow: 0 20px 60px rgba(29, 42, 47, 0.08);
+}
+
 .status-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -138,6 +148,71 @@ button {
   color: #123f3d;
   font-size: clamp(32px, 4vw, 52px);
   letter-spacing: -0.05em;
+}
+
+.field-label {
+  color: #123f3d;
+  font-weight: 800;
+}
+
+.connection-form input {
+  min-height: 48px;
+}
+
+.connection-help {
+  margin: 0;
+  color: #66757a;
+  line-height: 1.6;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  color: #6b4b18;
+  background: #ffe3af;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.status-pill.online {
+  color: #fff;
+  background: #0f5f5c;
+}
+
+.connection-meta {
+  display: grid;
+  gap: 6px;
+  padding: 18px 20px;
+  background: #fff;
+  border: 1px solid #e0d6c1;
+  border-radius: 20px;
+}
+
+.connection-meta span {
+  color: #d9822b;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.connection-meta strong {
+  color: #123f3d;
+  font-size: 16px;
+  word-break: break-all;
+}
+
+.connection-message {
+  margin: 0;
+  color: #405257;
+  line-height: 1.6;
+}
+
+.connection-message.error {
+  color: #7a1f12;
 }
 
 .scaffold-copy {
