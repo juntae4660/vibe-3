@@ -8,6 +8,7 @@ def get_connection() -> sqlite3.Connection:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     connection = sqlite3.connect(DATABASE_PATH)
     connection.row_factory = sqlite3.Row
+    connection.execute("PRAGMA foreign_keys = ON")
     return connection
 
 
@@ -70,8 +71,21 @@ def initialize_database() -> None:
 
             CREATE TABLE IF NOT EXISTS complaint_responses (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                complaint_text TEXT NOT NULL,
+                manual_id INTEGER,
+                question_text TEXT NOT NULL,
                 response_text TEXT NOT NULL,
+                sources_json TEXT,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+
+            CREATE TABLE IF NOT EXISTS complaint_manuals (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                filename TEXT NOT NULL,
+                original_filename TEXT NOT NULL,
+                stored_path TEXT NOT NULL,
+                vectorstore_path TEXT NOT NULL,
+                page_count INTEGER NOT NULL DEFAULT 0,
+                chunk_count INTEGER NOT NULL DEFAULT 0,
                 created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
 
@@ -79,15 +93,26 @@ def initialize_database() -> None:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL,
                 source TEXT NOT NULL,
+                summary TEXT,
+                published_at TEXT,
                 url TEXT NOT NULL,
+                category TEXT,
                 collected_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             """
         )
+        _ensure_column(connection, "complaint_responses", "manual_id", "INTEGER")
+        _ensure_column(connection, "complaint_responses", "question_text", "TEXT")
+        _ensure_column(connection, "complaint_responses", "sources_json", "TEXT")
+        _ensure_column(connection, "complaint_manuals", "page_count", "INTEGER")
+        _ensure_column(connection, "complaint_manuals", "chunk_count", "INTEGER")
         _ensure_column(connection, "calendar_events", "member_id", "INTEGER")
         _ensure_column(connection, "calendar_events", "location", "TEXT")
         _ensure_column(connection, "calendar_events", "memo", "TEXT")
         _ensure_column(connection, "calendar_events", "updated_at", "TEXT")
+        _ensure_column(connection, "news_articles", "summary", "TEXT")
+        _ensure_column(connection, "news_articles", "published_at", "TEXT")
+        _ensure_column(connection, "news_articles", "category", "TEXT")
 
 
 def _ensure_column(

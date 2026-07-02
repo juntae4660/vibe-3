@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>코드 테스트 리포트</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f1e8;
+      --panel: #fffaf1;
+      --line: #d8cdb7;
+      --text: #1d2a2f;
+      --muted: #66757a;
+      --brand: #123f3d;
+      --accent: #d9822b;
+      --warn: #8a3b21;
+      --soft-warn: #ffe3d8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 32px;
+      font-family: "Pretendard", "Noto Sans KR", "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top right, rgba(15, 95, 92, 0.12), transparent 28rem), var(--bg);
+      color: var(--text);
+    }
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+    header, section, .card {
+      background: rgba(255, 250, 240, 0.94);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: 0 16px 50px rgba(29, 42, 47, 0.08);
+    }
+    header {
+      padding: 28px;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, rgba(18, 63, 61, 0.96), rgba(15, 95, 92, 0.92));
+      color: #fff;
+    }
+    header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(30px, 4vw, 48px);
+      letter-spacing: -0.05em;
+    }
+    header p { margin: 0; color: #dceae7; }
+    section {
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    h2 {
+      margin: 0 0 16px;
+      color: var(--brand);
+      font-size: 22px;
+    }
+    p, li { line-height: 1.6; }
+    ul, ol { margin: 0; padding-left: 20px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #eadfc8;
+      vertical-align: top;
+      text-align: left;
+    }
+    th {
+      background: #f7f0df;
+      color: var(--brand);
+      font-size: 14px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #dceae7;
+      color: var(--brand);
+      font-weight: 800;
+      font-size: 12px;
+    }
+    .badge.warn {
+      background: var(--soft-warn);
+      color: var(--warn);
+    }
+    .muted { color: var(--muted); }
+    code {
+      padding: 2px 6px;
+      background: #eef3ef;
+      border-radius: 6px;
+      font-size: 0.95em;
+    }
+    .summary {
+      display: grid;
+      gap: 10px;
+    }
+    .footer-note {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <h1>코드 테스트 리포트</h1>
+      <p>FE/BE 자동 검사와 기본 보안 점검 결과</p>
+    </header>
+
+    <section>
+      <h2>검사 개요</h2>
+      <ul>
+        <li>대상: FE(React + TypeScript + Vite), BE(Python + FastAPI), SQLite 연동</li>
+        <li>목적: 정상 작동 여부와 기본 보안 취약성 점검</li>
+        <li>실행일: 2026-07-01</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>실행 결과</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>우선순위</th>
+            <th>영역</th>
+            <th>파일/위치</th>
+            <th>점검 항목</th>
+            <th>결과</th>
+            <th>권장 조치</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge">양호</span></td>
+            <td>FE</td>
+            <td><code>frontend/package.json</code></td>
+            <td>빌드 가능 여부</td>
+            <td><code>npm.cmd run build</code> 성공</td>
+            <td>UI 변경 시 동일 명령으로 회귀 확인</td>
+          </tr>
+          <tr>
+            <td><span class="badge">양호</span></td>
+            <td>BE</td>
+            <td><code>backend/app/main.py</code></td>
+            <td>앱 import 및 startup 경로</td>
+            <td><code>uv run python -c "from app.main import app"</code> 성공</td>
+            <td>startup 시 DB 초기화 유지</td>
+          </tr>
+          <tr>
+            <td><span class="badge">양호</span></td>
+            <td>BE/DB</td>
+            <td><code>backend/app/main.py</code>, <code>backend/app/core/database.py</code></td>
+            <td>런타임 health API</td>
+            <td><code>/api/health</code>, <code>/api/db/health</code> 정상 응답 확인</td>
+            <td>운영용 모니터링으로 확장 가능</td>
+          </tr>
+          <tr>
+            <td><span class="badge warn">중간</span></td>
+            <td>보안/구조</td>
+            <td><code>backend/app/api/routes/calendar.py:16-66</code>, <code>backend/app/main.py:17-22</code></td>
+            <td>인증/인가 부재</td>
+            <td>일정/팀원 생성, 수정, 삭제 API가 인증 없이 노출됨</td>
+            <td>세션/토큰 기반 인증과 권한 검증 추가</td>
+          </tr>
+          <tr>
+            <td><span class="badge warn">중간</span></td>
+            <td>DB 무결성</td>
+            <td><code>backend/app/core/database.py:7-11, 50-62</code></td>
+            <td>SQLite 외래키 강제 여부</td>
+            <td>FK는 선언됐지만 <code>PRAGMA foreign_keys=ON</code>이 없어 강제되지 않음</td>
+            <td>연결 시 외래키 활성화 설정 추가</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="summary">
+      <h2>보안 점검 메모</h2>
+      <p>개발용 CORS는 로컬 주소만 허용하고 있어 범위는 과도하지 않습니다.</p>
+      <p>SQL 접근은 확인된 범위에서 파라미터 바인딩 패턴을 사용하고 있습니다.</p>
+      <p>다만 인증/인가가 없어 내부 도구 수준을 넘는 배포에는 위험합니다.</p>
+      <p>파일 업로드 기능은 이번 대상 범위에 없어서 별도 취약점은 확인하지 못했습니다.</p>
+    </section>
+
+    <section>
+      <h2>요약</h2>
+      <p>FE 빌드와 BE 기동, DB health 응답은 정상이었습니다.</p>
+      <p>현재 가장 큰 리스크는 인증/인가가 전혀 없어 일정/팀원 변경 API가 그대로 노출된다는 점입니다.</p>
+      <p>SQLite는 외래키를 선언했지만 실제 강제가 빠져 있어 데이터 무결성 보완이 필요합니다.</p>
+    </section>
+
+    <section>
+      <h2>미검증 항목</h2>
+      <ul>
+        <li>FE 단위 테스트 스크립트가 없어 자동 테스트는 빌드 위주로만 확인함</li>
+        <li>BE <code>pytest</code> 스위트가 없어 단위/통합 테스트는 별도 실행하지 못함</li>
+        <li>브라우저 기반 UI 회귀 테스트는 수행하지 않음</li>
+      </ul>
+      <p class="footer-note">권장 조치: 인증/인가 추가, SQLite 외래키 활성화, 테스트 스크립트 보강.</p>
+    </section>
+  </div>
+</body>
+</html>
